@@ -1,19 +1,19 @@
+import CoffeeMachineState.*
+
 object CoffeeMachine {
     var currentState: CoffeeMachineState = CoffeeMachineState.Idle()
+    var monedero: Int = 0
 
-    fun makeCoffee() {
+    enum class BotonesCafe { CORTO, LECHE, AMERICANO }
+
+    fun gestorEstados(monedero: Int){
         println("Estado actual: $currentState")
 
         when (currentState) {
-            is CoffeeMachineState.Idle -> {
-                val idleState = currentState as CoffeeMachineState.Idle
-                println("Máquina encendida desde: ${idleState.timestamp}. Preparando café...")
-                currentState = CoffeeMachineState.Standby
-                println("La máquina queda en standby y está lista para servir café.")
-                currentState = CoffeeMachineState.CafeCorto
+            is CoffeeMachineState.Idle if monedero>0 -> {
+                println("Máquina en estado IDLE")
                 Thread.sleep(2000)
-                currentState = CoffeeMachineState.CafeListo("Nescafé")
-                println("¡Café listo! Estado: $currentState")
+                currentState = CoffeeMachineState.Standby
             }
             is CoffeeMachineState.Standby -> {
                 println("La máquina está en espera. Puedes pedir un café.")
@@ -32,6 +32,8 @@ object CoffeeMachine {
             is CoffeeMachineState.Error -> {
                 println("La máquina tiene un error: ${(currentState as CoffeeMachineState.Error).message}")
             }
+
+            is CoffeeMachineState.Idle -> TODO()
         }
     }
 

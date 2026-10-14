@@ -24,8 +24,9 @@ Estos tres estados preguntan si el usuario quiere azucar o no, y sea true o fals
 la máquina pasa al siguiente estado "Cafe Listo" y entrega el café al usuario.
 
 ### Sexto Estado: "Cafe Listo"
-Este estado representa el estado en el que la máquina ha terminado de preparar el café y está listo para ser entregado al usuario. 
-En este estado, la máquina muestra un mensaje indicando que el café está listo y espera a que el usuario lo recoja. 
+Este estado representa el estado en el que la máquina ha terminado de preparar el café y está 
+listo para ser entregado al usuario. En este estado, la máquina muestra un mensaje 
+indicando que el café está listo y espera a que el usuario lo recoja. 
 
 Una vez que el usuario recoge el café, la máquina confirma que Servido = true y pasa al estado "Limpiando", 
 donde se limpia la máquina y se prepara para el siguiente pedido.
@@ -33,10 +34,11 @@ donde se limpia la máquina y se prepara para el siguiente pedido.
 ### Septimo Estado: "Limpiando"
 Este estado representa el estado en el que la máquina está limpiando después de entregar el café al usuario. 
 En este estado, la máquina realiza las tareas de limpieza necesarias para mantener su funcionamiento óptimo. 
-Una vez que la limpieza se completa, la máquina vuelve al estado "Idle" y está lista para recibir un nuevo pedido de café.
+Una vez que la limpieza se completa, la máquina vuelve al estado "Idle" y 
+está lista para recibir un nuevo pedido de café.
 
-Antes de volver a "Idle", la maquina calcula el saldo restante, le da el cambio del pedido y el saldo se reinicia a 0.00, 
-para que el usuario pueda realizar un nuevo pedido de café.
+Antes de volver a "Idle", la máquina calcula el saldo restante, le da el cambio del pedido y el
+saldo se reinicia a 0.00, para que el usuario pueda realizar un nuevo pedido de café.
 
 ## Diagrama de estados
 ```mermaid
