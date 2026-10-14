@@ -1,6 +1,8 @@
 fun main() {
 
-    CoffeeMachine.currentState = CoffeeMachineState.Idle()
-    CoffeeMachine.gestorEstaodos(1)
+    CoffeeMachine.gestorEstados()
+
+    CoffeeMachine.insertarMoneda(2)
+    CoffeeMachine.seleccionarCafe(CoffeeMachine.BotonesCafe.LECHE)
 
 }
