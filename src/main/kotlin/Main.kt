@@ -1,8 +1,5 @@
 fun main() {
 
-    CoffeeMachine.gestorEstados()
-
-    CoffeeMachine.insertarMoneda(2)
-    CoffeeMachine.seleccionarCafe(CoffeeMachine.BotonesCafe.LECHE)
+    CoffeeMachine.gestorEstados(2.0, CoffeeMachine.BotonesCafe.AMERICANO)
 
 }
