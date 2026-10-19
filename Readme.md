@@ -13,12 +13,12 @@ saldo para poder realizar un pedido de café.
 ### Segundo Estado: "Standby"
 Este estado representa el estado en el que la máquina está lista para recibir un pedido de café.
 
-### Tercer , Cuarto y Quinto Estado: "Cafe Corto", "Cafe con Leche", "Cafe Americano"
+### Tercer, Cuarto y Quinto Estado: "Cafe Corto", "Cafe con Leche", "Cafe Americano"
 Estos estados representan los diferentes tipos de café que la máquina puede preparar.
 
-- Si se pulsa el "Boton 1", la máquina pasa al estado "Cafe Corto" y comienza a preparar un café corto.
-- Si se pulsa el "Boton 2", la máquina pasa al estado "Cafe con Leche" y comienza a preparar un café con leche.
-- Si se pulsa el "Boton 3", la máquina pasa al estado "Cafe Americano" y comienza a preparar un café americano.
+- Si se pulsa el "CORTO", la máquina pasa al estado "Cafe Corto" y comienza a preparar un café corto.
+- Si se pulsa el "LECHE", la máquina pasa al estado "Cafe con Leche" y comienza a preparar un café con leche.
+- Si se pulsa el "AMERICANO", la máquina pasa al estado "Cafe Americano" y comienza a preparar un café americano.
 
 Estos tres estados preguntan si el usuario quiere azucar o no, y sea true o false, 
 la máquina pasa al siguiente estado "Cafe Listo" y entrega el café al usuario.
@@ -45,9 +45,9 @@ saldo se reinicia a 0.00, para que el usuario pueda realizar un nuevo pedido de 
 stateDiagram-v2
     [*] --> Idle
     Idle --> Standby : Saldo >= 0.60
-    Standby --> CafeCorto : Boton1
-    Standby --> CafeConLeche : Boton2
-    Standby --> CafeAmericano : Boton3
+    Standby --> CafeCorto : CORTO
+    Standby --> CafeConLeche : LECHE
+    Standby --> CafeAmericano : AMERICANO
     CafeCorto --> CafeListo : Azucar? (true/false)
     CafeConLeche --> CafeListo : Azucar? (true/false)
     CafeAmericano --> CafeListo : Azucar? (true/false)

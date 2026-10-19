@@ -2,7 +2,6 @@ import CoffeeMachineState.*
 
 object CoffeeMachine {
     var currentState: CoffeeMachineState = Idle
-//    var monedero: Int = 0
 
     enum class BotonesCafe {CORTO, LECHE, AMERICANO}
 
@@ -12,7 +11,7 @@ object CoffeeMachine {
         while (funcionando) {
             when (currentState) {
                 is Idle -> {
-                    if (monedero > 0) {
+                    if (monedero > 0.60) {
                         println("Monedero detectado, pasando a Standby")
                         currentState = Standby
                     } else {
@@ -48,6 +47,8 @@ object CoffeeMachine {
                 }
                 is CafeListo -> {
                     println("Café servido. Por favor, toma tu café.")
+                    val cambio = monedero - 0.60
+                    println("Cambio a percibir: $cambio")
                     currentState = Limpiando
                 }
                 is Limpiando -> {
@@ -61,6 +62,5 @@ object CoffeeMachine {
                 }
             }
         }
-
     }
 }
