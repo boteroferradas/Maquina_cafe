@@ -1,5 +1,11 @@
+import org.example.Bebidas
+
 fun main() {
-
-    CoffeeMachine.gestorEstados(2.0, CoffeeMachine.BotonesCafe.AMERICANO)
-
+    CoffeeMachine.monedero = 0.50
+    CoffeeMachine.gestorEstados()
+    CoffeeMachine.seleccion = Bebidas.AMERICANO
+    CoffeeMachine.gestorEstados()
+    CoffeeMachine.gestorEstados()
+    CoffeeMachine.gestorEstados()
+    CoffeeMachine.gestorEstados()
 }
