@@ -4,11 +4,12 @@ import CoffeeMachine.seleccion
 import org.example.Bebidas
 
 sealed class CoffeeMachineState {
+
     object Idle : CoffeeMachineState(){
-        fun onenter() {
+        fun onenter(machine: CoffeeMachine) {
             println("Entrando al estado Idle")
             Thread.sleep(2000)
-            if (CoffeeMachine.monedero > 0.0) {
+            if (machine.monedero > 0.0) {
                 println("Monedero detectado, pasando a Standby")
                 currentState = Standby
             }
@@ -18,20 +19,21 @@ sealed class CoffeeMachineState {
         }
     }
     object Standby : CoffeeMachineState(){
-        fun onenter() {
+        fun onenter(machine: CoffeeMachine) {
             println("En Standby, cafe $seleccion seleccionado")
-            if (seleccion == Bebidas.CORTO && seleccion.precio <= monedero) {
-                currentState = CafeCorto
-            }
-            else if (seleccion == Bebidas.LECHE && seleccion.precio <= monedero) {
-                currentState = CafeConLeche
-            }
-            else if (seleccion == Bebidas.AMERICANO && seleccion.precio <= monedero) {
-                currentState = CafeAmericano
+
+            val precio = machine.seleccion.precio
+            if (machine.seleccion != Bebidas.NOBEBIDA && machine.monedero >= precio) {
+                machine.currentState = when (machine.seleccion) {
+                    Bebidas.CORTO -> CafeCorto
+                    Bebidas.LECHE -> CafeConLeche
+                    Bebidas.AMERICANO -> CafeAmericano
+                    else -> Idle
+                }
             }
             else {
-                println("No tiene saldo suficiente para $seleccion,volviendo a Idle")
-                currentState = Idle
+                println("-> No tiene saldo suficiente o sin seleccion valida. Volviendo a Idle")
+                machine.currentState = Idle
             }
         }
 
@@ -40,10 +42,10 @@ sealed class CoffeeMachineState {
         }
     }
     object CafeCorto : CoffeeMachineState() {
-        fun onenter() {
-            println("Cafe corto en preparacion...")
-            Thread.sleep(5000)
-            currentState = CafeListo
+        fun onenter(machine: CoffeeMachine) {
+            println("Cafe Corto en preparacion...")
+            Thread.sleep(2000)
+            machine.currentState = CafeListo
         }
 
         override fun toString(): String {
@@ -52,10 +54,10 @@ sealed class CoffeeMachineState {
     }
 
     object CafeConLeche : CoffeeMachineState(){
-        fun onenter() {
-            println("Cafe con leche en preparacion...")
-            Thread.sleep(5000)
-            currentState = CafeListo
+        fun onenter(machine: CoffeeMachine) {
+            println("Cafe con Leche en preparacion...")
+            Thread.sleep(2000)
+            machine.currentState = CafeListo
         }
 
         override fun toString(): String {
@@ -63,22 +65,27 @@ sealed class CoffeeMachineState {
         }
     }
     object CafeAmericano : CoffeeMachineState(){
-        fun onenter(){
+        fun onenter(machine: CoffeeMachine){
             println("Cafe americano en preparacion...")
-            Thread.sleep(5000)
-            currentState = CafeListo
+            Thread.sleep(2000)
+            machine.currentState = CafeListo
         }
 
         override fun toString(): String {
-            return "Cafe americano"
+            return "Cafe Americano"
         }
     }
     object CafeListo : CoffeeMachineState(){
-        fun onenter(){
-            println("Café servido. Por favor, toma tu café.")
-            val cambio = monedero - 0.60
-            println("Cambio a percibir: $cambio")
-            currentState = Limpiando
+        fun onenter(machine: CoffeeMachine){
+            val precio = machine.seleccion.precio
+            val cambio = machine.monedero - precio
+            println("Café servido! Por favor, toma tu café.")
+            println("Cambio a percibir: $cambio €")
+
+            machine.monedero = 0.0
+            machine.seleccion = Bebidas.NOBEBIDA
+
+            machine.currentState = Limpiando
         }
 
         override fun toString(): String {
@@ -86,16 +93,20 @@ sealed class CoffeeMachineState {
         }
     }
     object Limpiando : CoffeeMachineState(){
-        fun onenter(){
+        fun onenter(machine: CoffeeMachine){
             println("La máquina está limpiándose. Espera a que termine.")
-            Thread.sleep(2000)
-            print("Limpieza completada, volviendo Idle")
-            currentState = Idle
+            Thread.sleep(1000)
+            println("-> Limpieza completada, volviendo Idle")
+            machine.currentState = Idle
         }
 
         override fun toString(): String {
             return "Limpiando"
         }
     }
-    data class Error(val message: String) : CoffeeMachineState()
+    data class Error(val message: String) : CoffeeMachineState() {
+        override fun toString(): String {
+            return "Error: $message"
+        }
+    }
 }

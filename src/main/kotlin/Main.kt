@@ -5,7 +5,4 @@ fun main() {
     CoffeeMachine.gestorEstados()
     CoffeeMachine.seleccion = Bebidas.AMERICANO
     CoffeeMachine.gestorEstados()
-    CoffeeMachine.gestorEstados()
-    CoffeeMachine.gestorEstados()
-    CoffeeMachine.gestorEstados()
 }

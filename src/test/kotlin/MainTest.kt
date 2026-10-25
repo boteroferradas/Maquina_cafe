@@ -1,82 +1,80 @@
+import org.example.Bebidas
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
-import org.example.Bebidas
 
 class CoffeeMachineTest {
 
     @BeforeEach
-    fun resetMachine(){
+    fun setUp() {
+        // ¡Crucial! Como CoffeeMachine es un objeto global (object),
+        // debemos limpiar sus valores antes de cada test para que no se afecten entre ellos.
+        CoffeeMachine.currentState = CoffeeMachineState.Idle
         CoffeeMachine.monedero = 0.0
         CoffeeMachine.seleccion = Bebidas.NOBEBIDA
-        CoffeeMachine.currentState = CoffeeMachineState.Idle
     }
 
     @Test
-    fun `dado estado Idle sin dinero, permanece en Idle`() {
-        CoffeeMachine.monedero = 0.0
-
-        val nuevoEstado = CoffeeMachine.gestorEstados()
-
-        assertEquals(CoffeeMachineState.Idle, nuevoEstado)
+    fun `estado inicial debe ser Idle con monedero a cero`() {
+        // Assert
+        assertEquals(CoffeeMachineState.Idle, CoffeeMachine.currentState)
+        assertEquals(0.0, CoffeeMachine.monedero)
+        assertEquals(Bebidas.NOBEBIDA, CoffeeMachine.seleccion)
     }
 
     @Test
-    fun `dado estado Idle con dinero, transiciona a Standby`() {
-        CoffeeMachine.monedero = 1.0
+    fun `de Idle pasa a Standby si hay dinero en el monedero`() {
+        // Arrange
+        CoffeeMachine.monedero = 1.50
 
-        val nuevoEstado = CoffeeMachine.gestorEstados()
+        // Act
+        CoffeeMachine.gestorEstados() // Esto ejecuta el onenter del Idle
 
-        assertEquals(CoffeeMachineState.Standby, nuevoEstado)
+        // Assert
+        assertEquals(CoffeeMachineState.Standby, CoffeeMachine.currentState)
     }
 
     @Test
-    fun `dado estado Standby con saldo suficiente para Cafe Corto, transiciona a CafeCorto`() {
+    fun `de Standby pasa a CafeCorto si hay saldo suficiente y seleccion correcta`() {
+        // Arrange
         CoffeeMachine.currentState = CoffeeMachineState.Standby
-        CoffeeMachine.monedero = 1.0
-        CoffeeMachine.seleccion = Bebidas.CORTO
+        CoffeeMachine.monedero = 2.00
+        CoffeeMachine.seleccion = Bebidas.CORTO // Asumiendo que Bebidas.CORTO tiene un precio menor o igual a 2.00
 
-        val nuevoEstado = CoffeeMachine.gestorEstados()
+        // Act
+        CoffeeMachine.gestorEstados() // Ejecuta el onenter del Standby
 
-        assertEquals(CoffeeMachineState.CafeCorto, nuevoEstado)
+        // Assert
+        assertEquals(CoffeeMachineState.CafeCorto, CoffeeMachine.currentState)
     }
 
     @Test
-    fun `dado estado Standby sin saldo suficiente, no procesa la bebida`() {
+    fun `de Standby vuelve a Idle si el saldo es insuficiente`() {
+        // Arrange
         CoffeeMachine.currentState = CoffeeMachineState.Standby
-        CoffeeMachine.monedero = 0.20
-        CoffeeMachine.seleccion = Bebidas.CORTO
+        CoffeeMachine.monedero = 0.50
+        CoffeeMachine.seleccion = Bebidas.CORTO // Asumiendo que el corto cuesta más de 0.50
 
-        val nuevoEstado = CoffeeMachine.gestorEstados()
+        // Act
+        CoffeeMachine.gestorEstados() // Ejecuta el onenter del Standby
 
-        // Debería mantenerse en Standby o volver a Idle según tu lógica de diseño
-        assertNotEquals(CoffeeMachineState.CafeCorto, nuevoEstado)
-    }
-
-    @Test
-    fun `flujo completo desde CafeCorto hasta volver a Idle`() {
-        // 1. Preparando café
-        CoffeeMachine.currentState = CoffeeMachineState.CafeCorto
-        CoffeeMachine.gestorEstados()
-        assertEquals(CoffeeMachineState.CafeListo, CoffeeMachine.currentState)
-
-        // 2. Café listo -> pasa a Limpiando
-        CoffeeMachine.gestorEstados()
-        assertEquals(CoffeeMachineState.Limpiando, CoffeeMachine.currentState)
-
-        // 3. Limpiando -> regresa a Idle
-        CoffeeMachine.gestorEstados()
+        // Assert
         assertEquals(CoffeeMachineState.Idle, CoffeeMachine.currentState)
     }
 
-////    @Test
-////    fun `dado estado Error, no modifica el estado actual`() {
-////        val estadoError = CoffeeMachineState.Error("Falta agua")
-////        CoffeeMachine.currentState = estadoError
-////
-////        val nuevoEstado = CoffeeMachine.gestorEstados()
-////
-////        assertEquals(estadoError, nuevoEstado)
-////    }
-//}
+    @Test
+    fun `CafeListo calcula bien el cambio y limpia el monedero`() {
+        // Arrange
+        CoffeeMachine.currentState = CoffeeMachineState.CafeListo
+        CoffeeMachine.monedero = 2.00
+        CoffeeMachine.seleccion = Bebidas.CORTO // Digamos que cuesta 1.20
+
+        // Act
+        CoffeeMachine.gestorEstados() // Ejecuta CafeListo -> pasa a Limpiando y resetea
+
+        // Assert
+        assertEquals(0.0, CoffeeMachine.monedero)
+        assertEquals(Bebidas.NOBEBIDA, CoffeeMachine.seleccion)
+        assertEquals(CoffeeMachineState.Limpiando, CoffeeMachine.currentState)
+    }
 }

@@ -2,34 +2,34 @@ import CoffeeMachineState.*
 import org.example.Bebidas
 
 object CoffeeMachine {
-    public var currentState: CoffeeMachineState = Idle
+    public var currentState: CoffeeMachineState = CoffeeMachineState.Idle
     public var monedero: Double = 0.0
     public var seleccion: Bebidas = Bebidas.NOBEBIDA
 
     fun gestorEstados(): CoffeeMachineState{
-        println("Estado actual: $currentState")
+        println("\n--- Estado actual: $currentState ---")
 
-            when (currentState) {
+            when (val state = currentState) {
                 is Idle -> {
-                    (currentState as Idle).onenter()
+                    (currentState as Idle).onenter(this)
                 }
                 is Standby -> {
-                    (currentState as Standby).onenter()
+                    (currentState as Standby).onenter(this)
                 }
                 is CafeCorto -> {
-                    (currentState as CafeCorto).onenter()
+                    (currentState as CafeCorto).onenter(this)
                 }
                 is CafeConLeche -> {
-                    (currentState as CafeConLeche).onenter()
+                    (currentState as CafeConLeche).onenter(this)
                 }
                 is CafeAmericano -> {
-                    (currentState as CafeAmericano).onenter()
+                    (currentState as CafeAmericano).onenter(this)
                 }
                 is CafeListo -> {
-                    (currentState as CafeListo).onenter()
+                    (currentState as CafeListo).onenter(this)
                 }
                 is Limpiando -> {
-                    (currentState as Limpiando).onenter()
+                    (currentState as Limpiando).onenter(this)
                 }
                 is Error -> {
                     println("La máquina tiene un error: ${(currentState as Error).message}")
